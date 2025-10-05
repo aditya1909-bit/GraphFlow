@@ -1,0 +1,10 @@
+# Core scientific stack
+numpy>=1.23
+networkx>=2.8
+matplotlib>=3.6
+
+# Optional visualization / interactive demos
+streamlit>=1.25  # optional for visualization notebooks
+
+# Testing
+pytest>=7.0
