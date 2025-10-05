@@ -1,6 +1,6 @@
 
 
-# GraphFlow 🧠
+# GraphFlow
 
 **GraphFlow** is a minimal, educational framework for building Graph Neural Networks (GNNs) **from scratch** — featuring a tiny reverse‑mode autodiff engine (`Tensor`) and implementations of **GCN**, **GAT**, and **GraphSAGE**.
 
@@ -8,7 +8,7 @@ Everything is written in pure Python + NumPy — no PyTorch or TensorFlow — to
 
 ---
 
-## 🚀 Features
+## Features
 
 - **Tiny Autograd Engine** — `Tensor` supports reverse‑mode differentiation for scalar and matrix ops.
 - **Core Ops** — softmax, cross‑entropy, one‑hot, accuracy.
@@ -23,7 +23,7 @@ Everything is written in pure Python + NumPy — no PyTorch or TensorFlow — to
 
 ---
 
-## 🧩 Installation
+## Installation
 
 ```bash
 # clone
@@ -40,26 +40,26 @@ $ pip install -r requirements.txt
 
 ---
 
-## 🧠 Examples
+## Examples
 
-### 1️⃣ Node Classification (GCN)
+### Node Classification (GCN)
 ```bash
 python -m GraphFlow.Examples.node_classification
 ```
 
-### 2️⃣ Graph Regression (GCN)
+### Graph Regression (GCN)
 ```bash
 python -m GraphFlow.Examples.graph_regression
 ```
 
-### 3️⃣ Node Classification with GAT
+### Node Classification with GAT
 ```bash
 python -m GraphFlow.Examples.node_classification_gat
 ```
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 GraphFlow/
@@ -81,7 +81,7 @@ GraphFlow/
 
 ---
 
-## 🧮 Conceptual Overview
+## Conceptual Overview
 
 GraphFlow implements message‑passing networks using only `Tensor` primitives:
 
@@ -93,10 +93,10 @@ for GCN, with variants for GAT and GraphSAGE. Each model operates directly on Nu
 
 ---
 
-## 🧑‍💻 Author
+## Author
 **Aditya Dutta** — [@adityadutta](https://github.com/adityadutta)
 
 ---
 
-## 🧱 License
+## License
 MIT License © 2025 Aditya Dutta
