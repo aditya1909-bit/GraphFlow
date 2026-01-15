@@ -11,6 +11,7 @@ import numpy as np
 from Core.graph import make_two_community_graph, normalize_adjacency
 from Core.tensor import Tensor
 from Core.ops import cross_entropy, accuracy
+from Core.optim import Adam
 
 
 # ---------------------------------------------------------------------------
@@ -64,17 +65,6 @@ class GCN:
 
 
 # ---------------------------------------------------------------------------
-# Optimizer
-# ---------------------------------------------------------------------------
-
-def sgd(params, lr=0.05):
-    for p in params:
-        if p.grad is not None:
-            p.data -= lr * p.grad
-            p.grad = None
-
-
-# ---------------------------------------------------------------------------
 # Training script
 # ---------------------------------------------------------------------------
 
@@ -89,17 +79,17 @@ def main():
 
     # Train
     epochs = 200
-    lr = 0.05
+    optimizer = Adam(lr=0.01)
     for ep in range(1, epochs + 1):
         logits = model(X)  # Tensor (N, C)
-        # Compute loss on train nodes only
+        # Compute loss on train nodes only (masked loss keeps graph intact)
         train_idx = masks["train"]
-        loss = cross_entropy(Tensor(logits.data[train_idx], requires_grad=True), y[train_idx])
+        loss = cross_entropy(logits, y, mask=train_idx)
         loss.backward()
-        sgd(model.params, lr=lr)
+        optimizer.step(model.params)
 
         if ep % 20 == 0:
-            acc_tr = accuracy(logits, y[masks["train"]])
+            acc_tr = accuracy(Tensor(logits.data[masks["train"]]), y[masks["train"]])
             acc_va = accuracy(Tensor(logits.data[masks["val"]]), y[masks["val"]])
             print(f"Epoch {ep:03d} | loss={loss.data.item():.4f} | train_acc={acc_tr:.3f} | val_acc={acc_va:.3f}")
 

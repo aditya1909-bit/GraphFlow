@@ -1,6 +1,6 @@
 
 
-"""
+r"""
 Graph Convolutional Network (GCN) layers and a tiny 2-layer GCN model
 built on GraphFlow's minimal autograd Tensor.
 

@@ -1,6 +1,6 @@
 
 
-"""
+r"""
 Graph utilities for GraphFlow.
 
 This module provides:
@@ -23,7 +23,7 @@ Array = np.ndarray
 # ---------------------------------------------------------------------------
 
 def normalize_adjacency(A: Array, add_self_loops: bool = True) -> Array:
-    """Return symmetrically-normalized adjacency matrix.
+    r"""Return symmetrically-normalized adjacency matrix.
 
     Computes \hat{A} = D^{-1/2} (A + I) D^{-1/2} when ``add_self_loops`` is True,
     else D^{-1/2} A D^{-1/2}. Assumes ``A`` is square and non-negative.

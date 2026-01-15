@@ -48,6 +48,23 @@ def _expand_grad(grad: Array, in_shape: Tuple[int, ...], axis, keepdims: bool) -
     return np.broadcast_to(g, in_shape)
 
 
+def _sum_to_shape(grad: Array, shape: Tuple[int, ...]) -> Array:
+    """Sum gradients to match a target shape (for broadcasting)."""
+    g = np.asarray(grad)
+    if shape == ():
+        return np.array(g).sum()
+    if g.shape == shape:
+        return g
+    while g.ndim > len(shape):
+        g = g.sum(axis=0)
+    for axis, (gdim, sdim) in enumerate(zip(g.shape, shape)):
+        if sdim == 1 and gdim != 1:
+            g = g.sum(axis=axis, keepdims=True)
+    if g.shape != shape:
+        g = g.reshape(shape)
+    return g
+
+
 class Tensor:
     __slots__ = ("data", "grad", "requires_grad", "_backward", "_prev", "name")
 
@@ -80,9 +97,9 @@ class Tensor:
 
         def _backward():
             if self.requires_grad:
-                self._add_grad(np.ones_like(self.data) * out.grad)
+                self._add_grad(out.grad)
             if other.requires_grad:
-                other._add_grad(np.ones_like(other.data) * out.grad)
+                other._add_grad(out.grad)
         out._backward = _backward
         return out
 
@@ -95,9 +112,9 @@ class Tensor:
 
         def _backward():
             if self.requires_grad:
-                self._add_grad(np.ones_like(self.data) * out.grad)
+                self._add_grad(out.grad)
             if other.requires_grad:
-                other._add_grad(-np.ones_like(other.data) * out.grad)
+                other._add_grad(-out.grad)
         out._backward = _backward
         return out
 
@@ -235,6 +252,26 @@ class Tensor:
         out._backward = _backward
         return out
 
+    def sigmoid(self) -> 'Tensor':
+        out = Tensor(1.0 / (1.0 + np.exp(-self.data)), self.requires_grad)
+
+        def _backward():
+            if self.requires_grad:
+                self._add_grad(out.grad * (out.data * (1.0 - out.data)))
+        out._prev = (self,)
+        out._backward = _backward
+        return out
+
+    def reshape(self, shape) -> 'Tensor':
+        out = Tensor(self.data.reshape(shape), self.requires_grad)
+
+        def _backward():
+            if self.requires_grad:
+                self._add_grad(out.grad.reshape(self.data.shape))
+        out._prev = (self,)
+        out._backward = _backward
+        return out
+
     # ------------------------------------------------------------------
     # Autodiff
     # ------------------------------------------------------------------
@@ -243,7 +280,7 @@ class Tensor:
             return
         if self.grad is None:
             self.grad = np.zeros_like(self.data)
-        self.grad = self.grad + g
+        self.grad = self.grad + _sum_to_shape(g, self.data.shape)
 
     def backward(self, grad: Optional[Array] = None):
         """Backpropagate from this tensor.
