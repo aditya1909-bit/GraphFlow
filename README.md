@@ -36,7 +36,7 @@ Everything is written in pure Python + NumPy — no PyTorch or TensorFlow — to
 
 ```bash
 # clone
-$ git clone https://github.com/adityadutta/GraphFlow.git
+$ git clone https://github.com/aditya1909-bit/GraphFlow.git
 $ cd GraphFlow
 
 # create virtual environment
